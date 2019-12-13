@@ -3,30 +3,60 @@
 let prev = document.querySelector('.prev');
 let next = document.querySelector('.next');
 let slidesItem = document.querySelector('.slides');
-let dotsItem = document.querySelectorAll('.slider-dots_item');
+let dotsItem = document.getElementsByClassName('slider-dots_item');
 let dots = document.querySelector('.slider-dots');
+let sliderButton = document.querySelectorAll('.slider-arrow');
 
 let miniSlideItem = document.querySelector('.mini-slider__slides');
-let miniDotsItem = document.querySelectorAll('.mini-slider-dots_item');
+let miniDotsItem = document.getElementsByClassName('mini-slider-dots_item');
 let miniDots = document.querySelector('.mini-slider__dots');
 
 let slider = document.querySelector('.slider');
 let miniSlider = document.querySelector('.mini-slider');
 
 let modal = document.querySelector('.modal');
-
 let link = document.querySelector('.modal-link');
 
+let slides = document.querySelectorAll('.slider-item');
+let indent = slides.length;
 let index = 0;
 
+slidesItem.style.width = (indent * 100) + "%";
+
+// console.log(dotsItem);
+
+let modalImg = document.querySelector('.modal-image');
+
+for (let i = 0; i < slides.length; i++){
+    let createDot = document.createElement('span');
+    let createMinieDot = document.createElement('span');
+    dots.appendChild(createDot);
+    miniDots.appendChild(createMinieDot);
+    createDot.className = 'slider-dots_item';
+    createMinieDot.className = 'mini-slider-dots_item';
+}
+
+
+dotsItem[0].classList.add('active');
+miniDotsItem[0].classList.add('active');
+// console.log(dotsItem[0]);
+// dotsItem[0].classList.add('active');
+
 let scrollSliderFunc = function(n){
+
     index += n;
 
-    if (index <= -400) {
+    if (index <= -(indent) * 100){
         index = 0;
-    } else if (index > 0) {
-        index = -300;
+    } else if(index > 0){
+        index = -(indent) * 100;
     }
+
+    // if (index <= -400) {
+    //     index = 0;
+    // } else if (index > 0) {
+    //     index = -300;
+    // }
 
     slidesItem.style.left = `${index}%`;
     miniSlideItem.style.left = `${index}%`;
@@ -73,15 +103,24 @@ miniDots.addEventListener('click', function (e) {
 
 let interval = setInterval(function() {scrollSliderFunc(-100)}, 3000);
 
-slider.addEventListener('mouseout', function() {
-    interval = setInterval(function() {scrollSliderFunc(-100)}, 3000);
-});
 slider.addEventListener('mouseover', function() {
+    for (let i = 0; i < sliderButton.length; i++) {
+        // sliderButton[i].style.opacity = '1';
+        sliderButton[i].style.display = 'flex';
+    }
     clearInterval(interval);
 });
 
 miniSlider.addEventListener('mouseover', function() {
     clearInterval(interval);
+});
+
+slider.addEventListener('mouseout', function() {
+    for (let i = 0; i < sliderButton.length; i++) {
+        // sliderButton[i].style.opacity = '0';
+        sliderButton[i].style.display = 'none';
+    }
+    interval = setInterval(function() {scrollSliderFunc(-100)}, 3000);
 });
 
 
@@ -105,7 +144,13 @@ let modContText = document.querySelector('.modal-description');
         let modalContent = currentSlide.parentElement.children[1].textContent;
         modContText.textContent = modalContent;
 
-         modal.style.display = 'flex';
+         if (e.target === button[i]) {
+             let slideImg = slides[i].style.backgroundImage;
+             modalImg.style.backgroundImage = `url(img/slide${[i+1]}.jpg`;
+             modalImg.style.display = "flex";
+         }
+
+        modal.style.display = 'flex';
         clearInterval(interval);
      });
  }
